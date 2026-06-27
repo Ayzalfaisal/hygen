@@ -1,0 +1,23 @@
+Security note after moving to mobile web admin:
+
+The mobile web app uses SUPABASE_SERVICE_ROLE_KEY on the server, so it does not need open anon RLS policies for admin work.
+
+If you previously enabled broad anon policies like:
+  using (true)
+  with check (true)
+for public.licenses and public.access_codes, that is risky for a public client app.
+
+Do NOT blindly run this unless you understand your client/downloader extension's auth flow.
+You can remove old broad admin policies with commands like:
+
+-- Example only: remove broad admin policies created for testing
+-- drop policy if exists "admin_read_licenses" on public.licenses;
+-- drop policy if exists "admin_insert_licenses" on public.licenses;
+-- drop policy if exists "admin_update_licenses" on public.licenses;
+-- drop policy if exists "admin_delete_licenses" on public.licenses;
+-- drop policy if exists "admin_read_access_codes" on public.access_codes;
+-- drop policy if exists "admin_insert_access_codes" on public.access_codes;
+-- drop policy if exists "admin_update_access_codes" on public.access_codes;
+-- drop policy if exists "admin_delete_access_codes" on public.access_codes;
+
+Keep RLS enabled and create least-privilege policies for the actual client/downloader extension.
